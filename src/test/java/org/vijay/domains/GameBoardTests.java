@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * Created by vijayt on 7/23/2016.
  */
-public class GameBoardTest {
+public class GameBoardTests {
     @Test
     public final void testNewBoard() {
         List<String> aliveCells = new ArrayList<>();
@@ -30,6 +30,24 @@ public class GameBoardTest {
                 }
             }
         }
+    }
+
+    @Test
+    public final void testInvalidInitialConfig() {
+        List<String> aliveCells = new ArrayList<>();
+        aliveCells.add("1,3");
+        try {
+            GameBoard gameBoard = new GameBoard(2, aliveCells);
+        } catch (RuntimeException e) {
+            assertEquals("Invalid board size or alive indexes", e.getMessage());
+        }
+        try {
+            GameBoard gameBoard = new GameBoard(3, null);
+        } catch (RuntimeException e) {
+            assertEquals("Invalid board size or alive indexes", e.getMessage());
+        }
+        GameBoard gameBoard = new GameBoard(3, aliveCells);
+        assertTrue("There should had been no exceptions", true);
     }
 
     @Test
@@ -93,6 +111,31 @@ public class GameBoardTest {
             GameBoard gameBoard = new GameBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
+        }
+    }
+
+    @Test
+    public final void testCalculateNextGeneration() {
+        List<String> aliveCells = new ArrayList<>();
+        aliveCells.add("1,3");
+        aliveCells.add("3,1");
+        aliveCells.add("2,2");
+        GameBoard gameBoard = new GameBoard(3, aliveCells);
+        gameBoard.calculateNextGeneration();
+        List<List<Boolean>> board = gameBoard.getBoard();
+        for (int i = 0; i < 3; ++i) {
+            List<Boolean> row = board.get(i);
+            for (int j = 0; j < 3; ++j) {
+                assertTrue("Every cell in this generation should be alive, but we found " + (i + 1) + "," + (j + 1) + " to be dead", row.get(j));
+            }
+        }
+        gameBoard.calculateNextGeneration();
+        board = gameBoard.getBoard();
+        for (int i = 0; i < 3; ++i) {
+            List<Boolean> row = board.get(i);
+            for (int j = 0; j < 3; ++j) {
+                assertFalse("Every cell in this generation should be dead, but we found " + (i + 1) + "," + (j + 1) + " to be alive", row.get(j));
+            }
         }
     }
 }
