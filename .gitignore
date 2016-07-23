@@ -1,0 +1,4 @@
+gameoflife.zip
+*.iml
+.idea/**
+build/**
