@@ -16,22 +16,14 @@ public class GameBoard {
     boolean aliveCellsPresent;
     List<List<Boolean>> board;
 
-    public GameBoard(){
-        //required by the spring autowire
-    }
-
     //Assumption the indexes are comma separated
     //i.e each element in the list would be like 1,2 indicating that the cell at row 1 and col 2 is alive
     //in list terms index [0][1] is alive
-    public GameBoard(int size, List<String> initalAliveIndexes) {
+    public void initBoard(int size, List<String> initalAliveIndexes) {
         if (size < 3 || initalAliveIndexes == null) {
             throw new RuntimeException("Invalid board size or alive indexes");
         }
         this.size = size;
-        initBoard(initalAliveIndexes);
-    }
-
-    private void initBoard(List<String> initalAliveIndexes) {
         board = new ArrayList<List<Boolean>>();
         for (int i = 0; i < size; ++i) {
             ArrayList<Boolean> row = new ArrayList<Boolean>(Arrays.asList(new Boolean[size]));

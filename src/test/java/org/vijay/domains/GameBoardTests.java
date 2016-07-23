@@ -17,7 +17,8 @@ public class GameBoardTests {
         aliveCells.add("1,3");
         aliveCells.add("3,1");
         aliveCells.add("2,2");
-        GameBoard gameBoard = new GameBoard(3, aliveCells);
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initBoard(3, aliveCells);
         assertEquals(3, gameBoard.getSize());
         List<List<Boolean>> board = gameBoard.getBoard();
         for (int i = 0; i < 3; ++i) {
@@ -36,17 +37,18 @@ public class GameBoardTests {
     public final void testInvalidInitialConfig() {
         List<String> aliveCells = new ArrayList<>();
         aliveCells.add("1,3");
+        GameBoard gameBoard = new GameBoard();
         try {
-            GameBoard gameBoard = new GameBoard(2, aliveCells);
+            gameBoard.initBoard(2, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid board size or alive indexes", e.getMessage());
         }
         try {
-            GameBoard gameBoard = new GameBoard(3, null);
+            gameBoard.initBoard(3, null);
         } catch (RuntimeException e) {
             assertEquals("Invalid board size or alive indexes", e.getMessage());
         }
-        GameBoard gameBoard = new GameBoard(3, aliveCells);
+        gameBoard.initBoard(3, aliveCells);
         assertTrue("There should had been no exceptions", true);
     }
 
@@ -54,15 +56,16 @@ public class GameBoardTests {
     public final void testInvalidIndex() {
         List<String> aliveCells = new ArrayList<>();
         aliveCells.add("1,3,1");
+        GameBoard gameBoard = new GameBoard();
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid index provided", e.getMessage());
         }
         aliveCells.clear();
         aliveCells.add("1");
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid index provided", e.getMessage());
         }
@@ -72,43 +75,44 @@ public class GameBoardTests {
     public final void testInvalidRowCol() {
         List<String> aliveCells = new ArrayList<>();
         aliveCells.add("1,4");
+        GameBoard gameBoard = new GameBoard();
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
         }
         aliveCells.clear();
         aliveCells.add("4,3");
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
         }
         aliveCells.clear();
         aliveCells.add("0,3");
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
         }
         aliveCells.clear();
         aliveCells.add("1,0");
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
         }
         aliveCells.clear();
         aliveCells.add("-1,3");
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
         }
         aliveCells.clear();
         aliveCells.add("1,-1");
         try {
-            GameBoard gameBoard = new GameBoard(3, aliveCells);
+            gameBoard.initBoard(3, aliveCells);
         } catch (RuntimeException e) {
             assertEquals("Invalid row/col number", e.getMessage());
         }
@@ -120,7 +124,8 @@ public class GameBoardTests {
         aliveCells.add("1,3");
         aliveCells.add("3,1");
         aliveCells.add("2,2");
-        GameBoard gameBoard = new GameBoard(3, aliveCells);
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.initBoard(3, aliveCells);
         gameBoard.calculateNextGeneration();
         List<List<Boolean>> board = gameBoard.getBoard();
         for (int i = 0; i < 3; ++i) {

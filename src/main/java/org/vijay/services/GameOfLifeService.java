@@ -20,7 +20,7 @@ public class GameOfLifeService {
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", value = "/config")
     public List<List<Boolean>> configure(@RequestParam("size") int size, @RequestParam("indexes") String aliveIndexes) {
-        gameBoard = new GameBoard(size, Arrays.asList(aliveIndexes.split("\\|")));
+        gameBoard.initBoard(size, Arrays.asList(aliveIndexes.split("\\|")));
         return gameBoard.getBoard();
     }
 
