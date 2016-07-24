@@ -1,0 +1,14 @@
+<div>
+  {{appName}}<br/>
+  <input [(ngModel)]="size" placeholder="size"/>
+  <input [(ngModel)]="aliveIndexes" placeholder="aliveIndexes"/>
+  <button type="button" (click)="config()">Config/Reconfig</button>
+  <table border="1">
+    <tr *ngFor="let row of board">
+      <td *ngFor="let cell of row" [className]="selectClass(cell)">
+        {{cell}}
+      </td>
+    </tr>
+  </table>
+  <button type="button" (click)="calcNextGen()" *ngIf="board">Calc Next Gen</button>
+</div>
