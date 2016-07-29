@@ -4,7 +4,9 @@ package org.vijay.commons;
  * Created by vijayt on 7/29/16.
  */
 public enum ErrorCode {
-    INVALID_SIZE_OR_INDEX(1, "invalid.size.or.alive.index");
+    INVALID_SIZE_OR_INDEX(1, "invalid.size.or.alive.index"),
+    INVALID_INDEX(2, "invalid.index"),
+    INVALID_ROW_COL_NUMBER(3, "invalid.row.col.number");
     private final int number;
     private final String messageCode;
 

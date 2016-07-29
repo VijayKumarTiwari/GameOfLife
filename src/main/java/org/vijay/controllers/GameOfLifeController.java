@@ -3,8 +3,10 @@ package org.vijay.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.vijay.commons.BoardIndex;
+import org.vijay.commons.ErrorCode;
 import org.vijay.commons.InMemoryGameBoardStore;
 import org.vijay.domains.GameBoard;
+import org.vijay.exceptions.ValidationException;
 import org.vijay.services.GameBoardService;
 
 import javax.websocket.server.PathParam;
@@ -45,14 +47,14 @@ public class GameOfLifeController {
         indexes.forEach(index -> {
             String[] indexSplitList = index.split(",");
             if (indexSplitList.length != 2) {
-                throw new RuntimeException("invalid index " + index);
+                throw new ValidationException(ErrorCode.INVALID_INDEX, null);
             }
             try {
                 int row = Integer.parseInt(indexSplitList[0]) - 1;
                 int col = Integer.parseInt(indexSplitList[1]) - 1;
                 boardIndexList.add(new BoardIndex(row, col, maxSize));
             } catch (NumberFormatException e) {
-                throw new RuntimeException("invalid number", e);
+                throw new ValidationException(ErrorCode.INVALID_ROW_COL_NUMBER, e);
             }
         });
         return boardIndexList;
