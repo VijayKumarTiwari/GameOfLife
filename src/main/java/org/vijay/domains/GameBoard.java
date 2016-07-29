@@ -1,6 +1,9 @@
 package org.vijay.domains;
 
 import org.springframework.stereotype.Component;
+import org.vijay.commons.BoardIndex;
+import org.vijay.commons.ErrorCode;
+import org.vijay.exceptions.ValidationException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,20 +11,21 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by vijayt on 7/23/2016.
+ * GameBoard class, represents a nXn board.
+ * size: represents n.
+ * aliveCellsPresent: flag is used to identify if any cells are alive, it is used while setting the board values
+ * board: represents the actual game board
  */
 @Component
 public class GameBoard {
-    int size;
-    boolean aliveCellsPresent;
+    Integer id;
+    Integer size;
+    Boolean aliveCellsPresent;
     List<List<Boolean>> board;
 
-    //Assumption the indexes are comma separated
-    //i.e each element in the list would be like 1,2 indicating that the cell at row 1 and col 2 is alive
-    //in list terms index [0][1] is alive
-    public void initBoard(int size, List<String> initalAliveIndexes) {
+    public void initBoard(int size, List<BoardIndex> initalAliveIndexes) {
         if (size < 3 || initalAliveIndexes == null) {
-            throw new RuntimeException("Invalid board size or alive indexes");
+            throw new ValidationException(ErrorCode.INVALID_SIZE_OR_INDEX, null);
         }
         this.size = size;
         board = new ArrayList<List<Boolean>>();
@@ -35,26 +39,9 @@ public class GameBoard {
         setAliveCells(initalAliveIndexes);
     }
 
-    private void resetBoard() {
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                board.get(i).set(j, Boolean.FALSE);
-            }
-        }
-    }
-
-    private void setAliveCells(List<String> aliveIndexes) {
-        aliveIndexes.forEach(indexString -> {
-            String[] indexes = indexString.split(",");
-            if (indexes.length != 2) {
-                throw new RuntimeException("Invalid index provided");
-            }
-            int row = Integer.parseInt(indexes[0]);
-            int col = Integer.parseInt(indexes[1]);
-            if (row > size || col > size || row < 1 || col < 1) {
-                throw new RuntimeException("Invalid row/col number");
-            }
-            board.get(row - 1).set(col - 1, Boolean.TRUE);
+    private void setAliveCells(List<BoardIndex> aliveIndexes) {
+        aliveIndexes.forEach(boardIndex -> {
+            board.get(boardIndex.getRow()).set(boardIndex.getColumn(), Boolean.TRUE);
         });
         if (aliveIndexes.size() > 0) {
             aliveCellsPresent = true;
@@ -67,69 +54,38 @@ public class GameBoard {
         return board;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void calculateNextGeneration() {
-        List<String> nextGenerationAliveIndexes = new ArrayList<>();
-        for (int i = 0; i < size; ++i) {
-            List<Boolean> currentRow = board.get(i);
-            List<Boolean> aboveRow = i == 0 ? board.get(size - 1) : board.get(i - 1);
-            List<Boolean> belowRow = i == size - 1 ? board.get(0) : board.get(i + 1);
-            for (int j = 0; j < size; ++j) {
-                int aliveCount = 0;
-                //north
-                if (aboveRow.get(j)) {
-                    aliveCount++;
-                }
-                //current cell
-                if (currentRow.get(j)) {
-                    aliveCount++;
-                }
-                //south
-                if (belowRow.get(j)) {
-                    aliveCount++;
-                }
-                int nextColIndex = j == size - 1 ? 0 : j + 1;
-                //north-east
-                if (aboveRow.get(nextColIndex)) {
-                    aliveCount++;
-                }
-                //east
-                if (currentRow.get(nextColIndex)) {
-                    aliveCount++;
-                }
-                //south-east
-                if (belowRow.get(nextColIndex)) {
-                    aliveCount++;
-                }
-                int prevColIndex = j == 0 ? size - 1 : j - 1;
-                //north-west
-                if (aboveRow.get(prevColIndex)) {
-                    aliveCount++;
-                }
-                //west
-                if (currentRow.get(prevColIndex)) {
-                    aliveCount++;
-                }
-                //south-west
-                if (belowRow.get(prevColIndex)) {
-                    aliveCount++;
-                }
-                //check and set next generation value
-                if (aliveCount == 3) {
-                    nextGenerationAliveIndexes.add((i + 1) + "," + (j + 1));
-                }
-            }
-        }
-        if (nextGenerationAliveIndexes.size() > 0 || aliveCellsPresent) {
-            setNextGeneration(nextGenerationAliveIndexes);
-        }
+    public Boolean isAliveCellsPresent() {
+        return aliveCellsPresent;
     }
 
-    private void setNextGeneration(List<String> aliveIndexes) {
-        resetBoard();
-        setAliveCells(aliveIndexes);
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameBoard gameBoard = (GameBoard) o;
+
+        if (getId() != gameBoard.getId()) return false;
+        return getSize() == gameBoard.getSize();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId();
+        result = 31 * result + getSize();
+        return result;
     }
 }
