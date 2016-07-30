@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../Users/vijayt/Vijay/gameoflife-ui/tmp/broccoli_type_script_compiler-input_base_path-1nlcaNKc.tmp/0/src/app/gameboard/index.ts"],"names":[],"mappings":";;;;AAAA,iBAAc,uBAAuB,CAAC,EAAA","sourcesContent":["export * from './gameboard.component';\n"]}

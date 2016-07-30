@@ -7,6 +7,9 @@ public class BoardIndex {
     private int row;
     private int column;
 
+    public BoardIndex() {//needed by jackson
+    }
+
     public BoardIndex(int row, int column, int boardSize) {
         if (row < 0 || column < 0 || row >= boardSize || column >= boardSize) {
             throw new RuntimeException("invalid board index");

@@ -1,0 +1,46 @@
+.full-page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.content{
+  width: 80%;
+  margin-left: 20%;
+  vertical-align: middle;
+}
+
+.nav-border{
+  border: 1px;
+  border-color: #fff;
+}
+
+.game-board{
+  background-color: #fff;
+  border-collapse: collapse;
+}
+
+.game-board > tr,td{
+  padding: 0;
+  margin: 0;
+  border: 1px solid;
+}
+
+.cell {
+  width: 1px;
+  height: 1px;
+}
+
+.alive{
+  color: green;
+  background-color: green;
+}
+
+.dead{
+  color: red;
+  background-color: red;
+}

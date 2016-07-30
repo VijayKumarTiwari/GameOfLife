@@ -13,10 +13,16 @@ import java.util.Map;
 public class InMemoryGameBoardStore {
     private Map<Integer, GameBoard> store;
 
+    private static int idCounter = 0;
+
     public Map<Integer, GameBoard> getStore() {
         if (store == null) {
             store = new HashMap<>();
         }
         return store;
+    }
+
+    public int getNextCounter() {
+        return ++idCounter;
     }
 }

@@ -1,0 +1,33 @@
+<div class="bg-inverse full-page">
+  <h1>GameOfLife - Simulation</h1>
+  <div class="row content">
+    <div class="col-md-1 nav-border">
+      Scenarios<br/>
+      <ul>
+        <li *ngFor="let board of boards"><a href="#" (click)="loadBoard(board.id)">{{board.id}}</a></li>
+      </ul>
+      <button class="btn-sm btn-primary" type="button" (click)="addNew()">Add</button>
+    </div>
+    <div class="col-md-9 pull-xs-right">
+      <div *ngIf="board">
+        <div class="form-group">
+          <label class="pull-xs-left form-control-label">Board Id:</label><span>{{board.id}}</span><br/>
+          <input class="form-control" type="text" [(ngModel)]="board.size" placeholder="Size" /><br/>
+          <input *ngIf="board.id==':new'" class="form-control" type="text" [(ngModel)]="board.initialAliveCells" placeholder="Initial Alive Cells"/><br/>
+          <div *ngIf="board.id!=':new'"><label class="pull-xs-left form-control-label">Initial Alive Cells:</label><span *ngFor="let cell of board.initialAliveCells; let i=index;">{{cell.row+1}},{{cell.column+1}}<span *ngIf="i+1<board.initialAliveCells.length">|</span></span><br/></div>
+          <button type="button" class="btn-sm btn-success" *ngIf="board.id==':new'" (click)="configNewBoard()">Create</button>
+        </div>
+        <table class="game-board" *ngIf="board.id!=':new'">
+          <tr *ngFor="let row of board.board">
+            <td class="" *ngFor="let cell of row"><span class="alive" *ngIf="cell">&nbsp;</span><span class="dead" *ngIf="!cell">&nbsp;</span></td>
+          <tr>
+        </table>
+        <button *ngIf="board.id!=':new'" type="button" class="btn-sm btn-success" (click)="calcNextGen(board.id)">Next Gen</button>
+        <button *ngIf="board.id!=':new'" type="button" class="btn-sm btn-warning" (click)="deleteBoard(board.id)">Delete</button>
+      </div>
+      <div *ngIf="!board">
+        Select or create new scenario
+      </div>
+    </div>
+  <div>
+</div>

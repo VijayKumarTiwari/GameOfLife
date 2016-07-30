@@ -1,7 +1,9 @@
 package org.vijay.controllers;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
@@ -12,10 +14,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.vijay.GameoflifeApplication;
+import org.vijay.commons.InMemoryGameBoardStore;
 import org.vijay.domains.GameBoard;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -29,11 +33,19 @@ import static org.junit.Assert.assertNotNull;
 @WebIntegrationTest
 public class GameOfLifeControllerIntegrationTests {
     private RestTemplate restTemplate = new TestRestTemplate();
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://localhost:8080/board";
+
+    @Autowired
+    private InMemoryGameBoardStore inMemoryGameBoardStore;
+
+    @Before
+    public void clearData() {
+        inMemoryGameBoardStore.getStore().clear();
+    }
 
     @Test
-    public final void testConfigure() throws URISyntaxException {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl + "/config")
+    public final void testCreate() throws URISyntaxException {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("size", "4")
                 .queryParam("indexes", "1,2|3,3|2,2");
         RequestEntity requestEntity = RequestEntity.post(builder.build().encode().toUri()).build();
@@ -54,13 +66,13 @@ public class GameOfLifeControllerIntegrationTests {
     }
 
     @Test
-    public final void testGetState() throws URISyntaxException {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl + "/config")
+    public final void testGet() throws URISyntaxException {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("size", "4")
                 .queryParam("indexes", "1,2|3,3|2,2");
         RequestEntity requestEntity = RequestEntity.post(builder.build().encode().toUri()).build();
         restTemplate.exchange(requestEntity, GameBoard.class);
-        requestEntity = RequestEntity.get(new URI(baseUrl + "/get-state/1")).build();
+        requestEntity = RequestEntity.get(new URI(baseUrl + "/1")).build();
         ResponseEntity<GameBoard> response = restTemplate.exchange(requestEntity, GameBoard.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         GameBoard body = response.getBody();
@@ -70,13 +82,13 @@ public class GameOfLifeControllerIntegrationTests {
     }
 
     @Test
-    public final void testCalcNextGen() throws URISyntaxException {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl + "/config")
+    public final void testUpdateToNextGen() throws URISyntaxException {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("size", "4")
                 .queryParam("indexes", "1,2|3,3|2,2");
         RequestEntity requestEntity = RequestEntity.post(builder.build().encode().toUri()).build();
         restTemplate.exchange(requestEntity, GameBoard.class);
-        requestEntity = RequestEntity.get(new URI(baseUrl + "/calc-next-gen/1")).build();
+        requestEntity = RequestEntity.put(new URI(baseUrl + "/1")).build();
         ResponseEntity<GameBoard> response = restTemplate.exchange(requestEntity, GameBoard.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         GameBoard body = response.getBody();
@@ -101,5 +113,53 @@ public class GameOfLifeControllerIntegrationTests {
                 assertEquals(false, row.get(j));
             }
         }
+    }
+
+    @Test
+    public final void testList() throws URISyntaxException {
+        RequestEntity requestEntity = RequestEntity.get(new URI(baseUrl)).build();
+        ResponseEntity<Collection> response = restTemplate.exchange(requestEntity, Collection.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, response.getBody().size());
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("size", "4")
+                .queryParam("indexes", "1,2|3,3|2,2");
+        requestEntity = RequestEntity.post(builder.build().encode().toUri()).build();
+        restTemplate.exchange(requestEntity, GameBoard.class);
+        requestEntity = RequestEntity.get(new URI(baseUrl)).build();
+        response = restTemplate.exchange(requestEntity, Collection.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+
+        builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("size", "4")
+                .queryParam("indexes", "1,2|3,3|2,2|2,1");
+        requestEntity = RequestEntity.post(builder.build().encode().toUri()).build();
+        restTemplate.exchange(requestEntity, GameBoard.class);
+        builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("size", "4")
+                .queryParam("indexes", "1,2|3,3|2,2|3,1");
+        requestEntity = RequestEntity.post(builder.build().encode().toUri()).build();
+        restTemplate.exchange(requestEntity, GameBoard.class);
+        requestEntity = RequestEntity.get(new URI(baseUrl)).build();
+        response = restTemplate.exchange(requestEntity, Collection.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(3, response.getBody().size());
+    }
+
+    @Test
+    public final void testDelete() throws URISyntaxException {
+        RequestEntity requestEntity = RequestEntity.delete(new URI(baseUrl + "/1")).build();
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(requestEntity, Void.class);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("size", "4")
+                .queryParam("indexes", "1,2|3,3|2,2");
+        RequestEntity requestEntity1 = RequestEntity.post(builder.build().encode().toUri()).build();
+        ResponseEntity<GameBoard> response = restTemplate.exchange(requestEntity1, GameBoard.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        responseEntity = restTemplate.exchange(requestEntity, Void.class);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }

@@ -22,6 +22,7 @@ public class GameBoard {
     Integer size;
     Boolean aliveCellsPresent;
     List<List<Boolean>> board;
+    List<BoardIndex> initialAliveCells;
 
     public void initBoard(int size, List<BoardIndex> initalAliveIndexes) {
         if (size < 3 || initalAliveIndexes == null) {
@@ -35,6 +36,7 @@ public class GameBoard {
             board.add(row);
         }
 
+        this.initialAliveCells = initalAliveIndexes;
         //set the alive cell to Boolean.TRUE
         setAliveCells(initalAliveIndexes);
     }
@@ -64,6 +66,10 @@ public class GameBoard {
 
     public Integer getId() {
         return id;
+    }
+
+    public List<BoardIndex> getInitialAliveCells() {
+        return initialAliveCells;
     }
 
     public void setId(Integer id) {

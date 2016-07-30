@@ -1,3 +1,7 @@
+"use strict";
+// SystemJS configuration file, see links for more information
+// https://github.com/systemjs/systemjs
+// https://github.com/systemjs/systemjs/blob/master/docs/config-api.md
 /***********************************************************************************************
  * User Configuration.
  **********************************************************************************************/
@@ -14,6 +18,7 @@ var barrels = [
     '@angular/core',
     '@angular/common',
     '@angular/compiler',
+    '@angular/forms',
     '@angular/http',
     '@angular/router',
     '@angular/platform-browser',
@@ -23,6 +28,7 @@ var barrels = [
     // App specific barrels.
     'app',
     'app/shared',
+    'app/gameboard',
 ];
 var cliSystemConfigPackages = {};
 barrels.forEach(function (barrelName) {
