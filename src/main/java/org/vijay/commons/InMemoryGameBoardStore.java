@@ -25,4 +25,8 @@ public class InMemoryGameBoardStore {
     public int getNextCounter() {
         return ++idCounter;
     }
+
+    public void resetCounter(){
+        idCounter = 0;
+    }
 }

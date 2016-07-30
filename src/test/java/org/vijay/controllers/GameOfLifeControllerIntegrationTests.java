@@ -41,6 +41,7 @@ public class GameOfLifeControllerIntegrationTests {
     @Before
     public void clearData() {
         inMemoryGameBoardStore.getStore().clear();
+        inMemoryGameBoardStore.resetCounter();
     }
 
     @Test

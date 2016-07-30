@@ -36,18 +36,22 @@ public class GameOfLifeControllerTests {
 
     @Test
     public final void testCreate() {
+        int i=0;
         GameBoard gameBoard = new GameBoard();
         stub(inMemoryGameBoardStore.getStore()).toReturn(new HashMap<>());
         stub(gameBoardService.createNew(anyInt(), anyList())).toReturn(gameBoard);
+        stub(inMemoryGameBoardStore.getNextCounter()).toReturn(++i);
         assertEquals(gameBoard, gameOfLifeController.create(3, "1,2"));
         assertEquals(1, gameBoard.getId().intValue());
     }
 
     @Test
     public final void testGet() {
+        int i=0;
         GameBoard gameBoard = new GameBoard();
         stub(inMemoryGameBoardStore.getStore()).toReturn(new HashMap<>());
         stub(gameBoardService.createNew(anyInt(), anyList())).toReturn(gameBoard);
+        stub(inMemoryGameBoardStore.getNextCounter()).toReturn(++i);
         assertEquals(gameBoard, gameOfLifeController.create(3, "1,2"));
         assertEquals(gameBoard, gameOfLifeController.get(1));
     }
