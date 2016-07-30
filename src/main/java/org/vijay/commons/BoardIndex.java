@@ -1,7 +1,7 @@
 package org.vijay.commons;
 
 /**
- * Created by vijayt on 7/28/16.
+ * Simple class used to indicate location of a cell C in a given {@link org.vijay.domains.GameBoard}
  */
 public class BoardIndex {
     private int row;

@@ -16,7 +16,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by vijayt on 7/24/2016.
+ * Rest Controller for GameBoard
+ * Exposes following urls:
+ * GET - /board : list the boards
+ * GET - /board/{id} : get the id with given board
+ * POST - /board : create a new board
+ * PUT - /board/{id} : calclulate next gen for the given board
+ * DELETE - /board/{id} : delete the board with given id
  */
 @RestController
 @RequestMapping(value = "/board")

@@ -13,12 +13,27 @@ import java.util.List;
 @Service
 public class GameBoardService {
 
+    /**
+     * Used to initialize a new {@link GameBoard}
+     * @param size
+     * @param initialActiveIndexList
+     * @return
+     */
     public GameBoard createNew(int size, List<BoardIndex> initialActiveIndexList) {
         GameBoard gameBoard = new GameBoard();
         gameBoard.initBoard(size, initialActiveIndexList);
         return gameBoard;
     }
 
+    /**
+     * Calculate next generation of the {@link GameBoard}
+     * Algorithm Used: At any cell C calculate N the sum of all its alive neighbours and itself
+     * If N is 3 : The cell C will be alive in next gen
+     * Else : The cell C will be dead
+     * Also instead of keeping a list of cells to keep alive/dead in next gen we keep a list to indicate which cells must be toggled from alive-to-dead and vice-versa
+     * @param gameBoard
+     * @return
+     */
     public GameBoard calculateNextGen(GameBoard gameBoard) {
         List<BoardIndex> nextGenerationToggleIndexes = new ArrayList<>();
         for (int i = 0; i < gameBoard.getSize(); ++i) {
